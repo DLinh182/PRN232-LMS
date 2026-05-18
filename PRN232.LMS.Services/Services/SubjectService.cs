@@ -1,0 +1,112 @@
+﻿using PRN232.LMS.Repositories.Common;
+using PRN232.LMS.Repositories.Entities;
+using PRN232.LMS.Repositories.Interfaces;
+using PRN232.LMS.Services.BusinessModels;
+using PRN232.LMS.Services.Common;
+using PRN232.LMS.Services.Interfaces;
+
+namespace PRN232.LMS.Services.Services;
+
+public class SubjectService : ISubjectService
+{
+    private readonly ISubjectRepository _subjectRepository;
+
+    public SubjectService(ISubjectRepository subjectRepository)
+    {
+        _subjectRepository = subjectRepository;
+    }
+
+    public async Task<PagedResult<SubjectModel>> GetPagedAsync(
+        string? search,
+        string? sort,
+        int page,
+        int size,
+        string[] expands)
+    {
+        var expandList = expands ?? Array.Empty<string>();
+
+        var query = new SubjectQuery
+        {
+            Search = search,
+            Sort = sort,
+            Page = page < 1 ? 1 : page,
+            Size = size < 1 ? 10 : size,
+            Expands = expandList
+        };
+
+        var (items, total) = await _subjectRepository.GetPagedAsync(query);
+
+        return new PagedResult<SubjectModel>
+        {
+            Items = items.Select(MapToModel).ToList(),
+            Page = query.Page,
+            PageSize = query.Size,
+            TotalItems = total,
+            TotalPages = total == 0
+                ? 0
+                : (int)Math.Ceiling(total / (double)query.Size)
+        };
+    }
+
+    public async Task<SubjectModel?> GetByIdAsync(int id, string[] expands)
+    {
+        var expandList = expands ?? Array.Empty<string>();
+        var subject = await _subjectRepository.GetByIdAsync(id, expandList);
+
+        if (subject == null)
+        {
+            return null;
+        }
+
+        return MapToModel(subject);
+    }
+
+    public async Task<SubjectModel> CreateAsync(SubjectModel model)
+    {
+        var entity = new Subject
+        {
+            SubjectCode = model.SubjectCode,
+            SubjectName = model.SubjectName,
+            Credit = model.Credit
+        };
+
+        var created = await _subjectRepository.CreateAsync(entity);
+        return MapToModel(created);
+    }
+
+    public async Task<SubjectModel?> UpdateAsync(SubjectModel model)
+    {
+        var entity = new Subject
+        {
+            SubjectId = model.SubjectId,
+            SubjectCode = model.SubjectCode,
+            SubjectName = model.SubjectName,
+            Credit = model.Credit
+        };
+
+        var updated = await _subjectRepository.UpdateAsync(entity);
+
+        if (updated == null)
+        {
+            return null;
+        }
+
+        return MapToModel(updated);
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        return await _subjectRepository.DeleteAsync(id);
+    }
+
+    private static SubjectModel MapToModel(Subject subject)
+    {
+        return new SubjectModel
+        {
+            SubjectId = subject.SubjectId,
+            SubjectCode = subject.SubjectCode,
+            SubjectName = subject.SubjectName,
+            Credit = subject.Credit
+        };
+    }
+}
