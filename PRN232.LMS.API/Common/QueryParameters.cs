@@ -1,4 +1,4 @@
-﻿namespace PRN232.LMS.API.Common;
+namespace PRN232.LMS.API.Common;
 
 public class QueryParameters
 {
@@ -8,8 +8,6 @@ public class QueryParameters
     public int Size { get; set; } = 10;
     public string? Fields { get; set; }
     public string? Expand { get; set; }
-
-    public int Skip => (Page - 1) * Size;
 
     public string[] GetExpandList()
         => string.IsNullOrWhiteSpace(Expand)

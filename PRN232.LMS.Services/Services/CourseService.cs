@@ -1,4 +1,4 @@
-﻿using PRN232.LMS.Repositories.Common;
+using PRN232.LMS.Repositories.Common;
 using PRN232.LMS.Repositories.Entities;
 using PRN232.LMS.Repositories.Interfaces;
 using PRN232.LMS.Services.BusinessModels;
@@ -131,6 +131,25 @@ public class CourseService : ICourseService
                 SubjectName = course.Subject.SubjectName,
                 Credit = course.Subject.Credit
             };
+        }
+
+        if (set.Contains("enrollments") && course.Enrollments != null)
+        {
+            model.Enrollments = course.Enrollments.Select(e => new EnrollmentModel
+            {
+                EnrollmentId = e.EnrollmentId,
+                StudentId = e.StudentId,
+                CourseId = e.CourseId,
+                EnrollDate = e.EnrollDate,
+                Status = e.Status,
+                Student = e.Student == null ? null : new StudentModel
+                {
+                    StudentId = e.Student.StudentId,
+                    FullName = e.Student.FullName,
+                    Email = e.Student.Email,
+                    DateOfBirth = e.Student.DateOfBirth
+                }
+            }).ToList();
         }
 
         return model;

@@ -1,4 +1,4 @@
-﻿namespace PRN232.LMS.Repositories.Common;
+namespace PRN232.LMS.Repositories.Common;
 
 public class SubjectQuery
 {
@@ -7,6 +7,4 @@ public class SubjectQuery
     public int Page { get; set; } = 1;
     public int Size { get; set; } = 10;
     public string[] Expands { get; set; } = Array.Empty<string>();
-
-    public int Skip => (Page - 1) * Size;
 }

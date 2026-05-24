@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PRN232.LMS.Repositories.Common;
 using PRN232.LMS.Repositories.Data;
 using PRN232.LMS.Repositories.Entities;
@@ -32,8 +32,10 @@ public class SubjectRepository : ISubjectRepository
 
         var totalItems = await q.CountAsync();
 
+        var offset = (query.Page - 1) * query.Size;
+
         var items = await q
-            .Skip(query.Skip)
+            .Skip(offset)
             .Take(query.Size)
             .ToListAsync();
 

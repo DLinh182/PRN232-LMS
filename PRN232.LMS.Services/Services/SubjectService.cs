@@ -1,4 +1,4 @@
-﻿using PRN232.LMS.Repositories.Common;
+using PRN232.LMS.Repositories.Common;
 using PRN232.LMS.Repositories.Entities;
 using PRN232.LMS.Repositories.Interfaces;
 using PRN232.LMS.Services.BusinessModels;
@@ -38,7 +38,7 @@ public class SubjectService : ISubjectService
 
         return new PagedResult<SubjectModel>
         {
-            Items = items.Select(MapToModel).ToList(),
+            Items = items.Select(x => MapToModel(x, expandList)).ToList(),
             Page = query.Page,
             PageSize = query.Size,
             TotalItems = total,
@@ -58,7 +58,7 @@ public class SubjectService : ISubjectService
             return null;
         }
 
-        return MapToModel(subject);
+        return MapToModel(subject, expandList);
     }
 
     public async Task<SubjectModel> CreateAsync(SubjectModel model)
@@ -71,7 +71,7 @@ public class SubjectService : ISubjectService
         };
 
         var created = await _subjectRepository.CreateAsync(entity);
-        return MapToModel(created);
+        return MapToModel(created, Array.Empty<string>());
     }
 
     public async Task<SubjectModel?> UpdateAsync(SubjectModel model)
@@ -91,7 +91,7 @@ public class SubjectService : ISubjectService
             return null;
         }
 
-        return MapToModel(updated);
+        return MapToModel(updated, Array.Empty<string>());
     }
 
     public async Task<bool> DeleteAsync(int id)
@@ -99,14 +99,29 @@ public class SubjectService : ISubjectService
         return await _subjectRepository.DeleteAsync(id);
     }
 
-    private static SubjectModel MapToModel(Subject subject)
+    private static SubjectModel MapToModel(Subject subject, string[] expands)
     {
-        return new SubjectModel
+        var model = new SubjectModel
         {
             SubjectId = subject.SubjectId,
             SubjectCode = subject.SubjectCode,
             SubjectName = subject.SubjectName,
             Credit = subject.Credit
         };
+
+        var set = expands.Select(x => x.Trim().ToLower()).ToHashSet();
+
+        if (set.Contains("courses") && subject.Courses != null)
+        {
+            model.Courses = subject.Courses.Select(c => new CourseModel
+            {
+                CourseId = c.CourseId,
+                CourseName = c.CourseName,
+                SemesterId = c.SemesterId,
+                SubjectId = c.SubjectId
+            }).ToList();
+        }
+
+        return model;
     }
 }

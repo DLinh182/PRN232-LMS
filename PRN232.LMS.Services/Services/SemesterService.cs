@@ -1,4 +1,4 @@
-﻿using PRN232.LMS.Repositories.Common;
+using PRN232.LMS.Repositories.Common;
 using PRN232.LMS.Repositories.Entities;
 using PRN232.LMS.Repositories.Interfaces;
 using PRN232.LMS.Services.BusinessModels;
@@ -38,7 +38,7 @@ public class SemesterService : ISemesterService
 
         return new PagedResult<SemesterModel>
         {
-            Items = items.Select(MapToModel).ToList(),
+            Items = items.Select(x => MapToModel(x, expandList)).ToList(),
             Page = query.Page,
             PageSize = query.Size,
             TotalItems = total,
@@ -58,7 +58,7 @@ public class SemesterService : ISemesterService
             return null;
         }
 
-        return MapToModel(semester);
+        return MapToModel(semester, expandList);
     }
 
     public async Task<SemesterModel> CreateAsync(SemesterModel model)
@@ -71,7 +71,7 @@ public class SemesterService : ISemesterService
         };
 
         var created = await _semesterRepository.CreateAsync(entity);
-        return MapToModel(created);
+        return MapToModel(created, Array.Empty<string>());
     }
 
     public async Task<SemesterModel?> UpdateAsync(SemesterModel model)
@@ -91,7 +91,7 @@ public class SemesterService : ISemesterService
             return null;
         }
 
-        return MapToModel(updated);
+        return MapToModel(updated, Array.Empty<string>());
     }
 
     public async Task<bool> DeleteAsync(int id)
@@ -99,14 +99,29 @@ public class SemesterService : ISemesterService
         return await _semesterRepository.DeleteAsync(id);
     }
 
-    private static SemesterModel MapToModel(Semester semester)
+    private static SemesterModel MapToModel(Semester semester, string[] expands)
     {
-        return new SemesterModel
+        var model = new SemesterModel
         {
             SemesterId = semester.SemesterId,
             SemesterName = semester.SemesterName,
             StartDate = semester.StartDate,
             EndDate = semester.EndDate
         };
+
+        var set = expands.Select(x => x.Trim().ToLower()).ToHashSet();
+
+        if (set.Contains("courses") && semester.Courses != null)
+        {
+            model.Courses = semester.Courses.Select(c => new CourseModel
+            {
+                CourseId = c.CourseId,
+                CourseName = c.CourseName,
+                SemesterId = c.SemesterId,
+                SubjectId = c.SubjectId
+            }).ToList();
+        }
+
+        return model;
     }
 }

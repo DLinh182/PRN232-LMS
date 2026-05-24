@@ -9,4 +9,5 @@ public class CourseModel
 
     public SemesterModel? Semester { get; set; }
     public SubjectModel? Subject { get; set; }
+    public List<EnrollmentModel>? Enrollments { get; set; }
 }

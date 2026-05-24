@@ -9,4 +9,5 @@ public class CourseResponse
 
     public SemesterResponse? Semester { get; set; }
     public SubjectResponse? Subject { get; set; }
+    public List<EnrollmentResponse>? Enrollments { get; set; }
 }

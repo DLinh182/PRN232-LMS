@@ -1,4 +1,4 @@
-﻿namespace PRN232.LMS.API.Models.ResponseModels;
+namespace PRN232.LMS.API.Models.ResponseModels;
 
 public class SemesterResponse
 {
@@ -6,4 +6,6 @@ public class SemesterResponse
     public string SemesterName { get; set; } = string.Empty;
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+
+    public List<CourseResponse>? Courses { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿namespace PRN232.LMS.API.Models.ResponseModels;
+namespace PRN232.LMS.API.Models.ResponseModels;
 
 public class SubjectResponse
 {
@@ -6,4 +6,6 @@ public class SubjectResponse
     public string SubjectCode { get; set; } = string.Empty;
     public string SubjectName { get; set; } = string.Empty;
     public int Credit { get; set; }
+
+    public List<CourseResponse>? Courses { get; set; }
 }

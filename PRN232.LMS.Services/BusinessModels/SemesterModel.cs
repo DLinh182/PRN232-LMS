@@ -1,4 +1,4 @@
-﻿namespace PRN232.LMS.Services.BusinessModels;
+namespace PRN232.LMS.Services.BusinessModels;
 
 public class SemesterModel
 {
@@ -6,4 +6,6 @@ public class SemesterModel
     public string SemesterName { get; set; } = string.Empty;
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+
+    public List<CourseModel>? Courses { get; set; }
 }

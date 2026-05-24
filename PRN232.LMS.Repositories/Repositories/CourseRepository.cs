@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PRN232.LMS.Repositories.Common;
 using PRN232.LMS.Repositories.Data;
 using PRN232.LMS.Repositories.Entities;
@@ -30,8 +30,10 @@ public class CourseRepository : ICourseRepository
 
         var totalItems = await q.CountAsync();
 
+        var offset = (query.Page - 1) * query.Size;
+
         var items = await q
-            .Skip(query.Skip)
+            .Skip(offset)
             .Take(query.Size)
             .ToListAsync();
 
@@ -102,6 +104,11 @@ public class CourseRepository : ICourseRepository
         if (set.Contains("subject"))
         {
             query = query.Include(x => x.Subject);
+        }
+        if (set.Contains("enrollments"))
+        {
+            query = query.Include(x => x.Enrollments)
+                         .ThenInclude(e => e.Student);
         }
 
         return query;
