@@ -25,6 +25,22 @@ public class EnrollmentRepository : IEnrollmentRepository
             q = q.Where(x => x.Status.ToLower().Contains(keyword));
         }
 
+        if (!string.IsNullOrWhiteSpace(query.Status))
+        {
+            var status = query.Status.Trim().ToLower();
+            q = q.Where(x => x.Status.ToLower() == status);
+        }
+
+        if (query.StudentId.HasValue)
+        {
+            q = q.Where(x => x.StudentId == query.StudentId.Value);
+        }
+
+        if (query.CourseId.HasValue)
+        {
+            q = q.Where(x => x.CourseId == query.CourseId.Value);
+        }
+
         q = ApplyExpands(q, query.Expands);
         q = ApplySort(q, query.Sort);
 

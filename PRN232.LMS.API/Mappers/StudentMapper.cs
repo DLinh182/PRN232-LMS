@@ -22,7 +22,16 @@ public static class StudentMapper
                 Course = e.Course == null ? null : new CourseResponse
                 {
                     CourseId = e.Course.CourseId,
-                    CourseName = e.Course.CourseName
+                    CourseName = e.Course.CourseName,
+                    SemesterId = e.Course.SemesterId,
+                    SubjectId = e.Course.SubjectId,
+                    Semester = e.Course.Semester == null ? null : new SemesterResponse
+                    {
+                        SemesterId = e.Course.Semester.SemesterId,
+                        SemesterName = e.Course.Semester.SemesterName,
+                        StartDate = e.Course.Semester.StartDate,
+                        EndDate = e.Course.Semester.EndDate
+                    }
                 }
             }).ToList()
         };

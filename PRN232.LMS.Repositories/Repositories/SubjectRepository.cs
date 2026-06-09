@@ -27,6 +27,11 @@ public class SubjectRepository : ISubjectRepository
                 x.SubjectName.ToLower().Contains(keyword));
         }
 
+        if (query.Credit.HasValue)
+        {
+            q = q.Where(x => x.Credit == query.Credit.Value);
+        }
+
         q = ApplyExpands(q, query.Expands);
         q = ApplySort(q, query.Sort);
 

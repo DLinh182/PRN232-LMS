@@ -10,7 +10,8 @@ public interface IStudentService
         string? sort,
         int page,
         int size,
-        string[] expands);
+        string[] expands,
+        string? email = null);
 
     Task<StudentModel?> GetByIdAsync(int id, string[] expands);
 

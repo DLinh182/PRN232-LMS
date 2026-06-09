@@ -10,7 +10,10 @@ public interface IEnrollmentService
         string? sort,
         int page,
         int size,
-        string[] expands);
+        string[] expands,
+        string? status = null,
+        int? studentId = null,
+        int? courseId = null);
 
     Task<EnrollmentModel?> GetByIdAsync(int id, string[] expands);
 

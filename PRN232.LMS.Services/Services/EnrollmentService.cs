@@ -21,13 +21,19 @@ public class EnrollmentService : IEnrollmentService
         string? sort,
         int page,
         int size,
-        string[] expands)
+        string[] expands,
+        string? status = null,
+        int? studentId = null,
+        int? courseId = null)
     {
         var expandList = expands ?? Array.Empty<string>();
 
         var query = new EnrollmentQuery
         {
             Search = search,
+            Status = status,
+            StudentId = studentId,
+            CourseId = courseId,
             Sort = sort,
             Page = page < 1 ? 1 : page,
             Size = size < 1 ? 10 : size,

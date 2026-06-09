@@ -10,7 +10,8 @@ public interface ISubjectService
         string? sort,
         int page,
         int size,
-        string[] expands);
+        string[] expands,
+        int? credit = null);
 
     Task<SubjectModel?> GetByIdAsync(int id, string[] expands);
 

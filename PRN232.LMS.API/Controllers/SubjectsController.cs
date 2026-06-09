@@ -36,7 +36,8 @@ public class SubjectsController : ControllerBase
             qp.Sort,
             qp.Page,
             qp.Size,
-            qp.GetExpandList());
+            qp.GetExpandList(),
+            qp.Credit);
 
         var response = result.Items.Select(SubjectMapper.ToResponse).ToList();
 
@@ -60,7 +61,7 @@ public class SubjectsController : ControllerBase
         });
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(
         int id,
         [FromQuery] string? expand,
@@ -81,7 +82,7 @@ public class SubjectsController : ControllerBase
             return NotFound(new ApiResponse<object>
             {
                 Success = false,
-                Message = "Subject not found"
+                Message = "Resource not found"
             });
         }
 
@@ -120,7 +121,7 @@ public class SubjectsController : ControllerBase
         });
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, UpdateSubjectRequest request)
     {
         var model = new SubjectModel
@@ -152,7 +153,7 @@ public class SubjectsController : ControllerBase
         });
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _subjectService.DeleteAsync(id);
@@ -166,10 +167,6 @@ public class SubjectsController : ControllerBase
             });
         }
 
-        return Ok(new ApiResponse<object>
-        {
-            Success = true,
-            Message = "Subject deleted successfully"
-        });
+        return NoContent();
     }
 }
