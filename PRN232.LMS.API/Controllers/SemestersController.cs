@@ -60,7 +60,7 @@ public class SemestersController : ControllerBase
         });
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(
         int id,
         [FromQuery] string? expand,
@@ -81,7 +81,7 @@ public class SemestersController : ControllerBase
             return NotFound(new ApiResponse<object>
             {
                 Success = false,
-                Message = "Semester not found"
+                Message = "Resource not found"
             });
         }
 
@@ -120,7 +120,7 @@ public class SemestersController : ControllerBase
         });
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, UpdateSemesterRequest request)
     {
         var model = new SemesterModel
@@ -152,7 +152,7 @@ public class SemestersController : ControllerBase
         });
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _semesterService.DeleteAsync(id);
@@ -166,10 +166,6 @@ public class SemestersController : ControllerBase
             });
         }
 
-        return Ok(new ApiResponse<object>
-        {
-            Success = true,
-            Message = "Semester deleted successfully"
-        });
+        return NoContent();
     }
 }

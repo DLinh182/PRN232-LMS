@@ -28,6 +28,12 @@ public class StudentRepository : IStudentRepository
                 x.Email.ToLower().Contains(keyword));
         }
 
+        if (!string.IsNullOrWhiteSpace(query.Email))
+        {
+            var email = query.Email.Trim().ToLower();
+            q = q.Where(x => x.Email.ToLower().Contains(email));
+        }
+
         // EXPAND (trước khi sort/paging)
         q = ApplyExpands(q, query.Expands);
 
@@ -114,11 +120,19 @@ public class StudentRepository : IStudentRepository
         }
 
         // GET /students?expand=enrollments,course OR /students?expand=course
-        if (set.Contains("course"))
+        if (set.Contains("course") || set.Contains("semester"))
         {
             query = query
                 .Include(x => x.Enrollments)
                 .ThenInclude(e => e.Course);
+        }
+
+        if (set.Contains("semester"))
+        {
+            query = query
+                .Include(x => x.Enrollments)
+                .ThenInclude(e => e.Course)
+                .ThenInclude(c => c.Semester);
         }
 
         return query;

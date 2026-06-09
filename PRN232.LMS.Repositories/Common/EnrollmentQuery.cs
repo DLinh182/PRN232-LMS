@@ -3,6 +3,9 @@ namespace PRN232.LMS.Repositories.Common;
 public class EnrollmentQuery
 {
     public string? Search { get; set; }
+    public string? Status { get; set; }
+    public int? StudentId { get; set; }
+    public int? CourseId { get; set; }
     public string? Sort { get; set; }
     public int Page { get; set; } = 1;
     public int Size { get; set; } = 10;

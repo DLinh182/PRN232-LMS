@@ -36,7 +36,10 @@ public class EnrollmentsController : ControllerBase
             qp.Sort,
             qp.Page,
             qp.Size,
-            qp.GetExpandList());
+            qp.GetExpandList(),
+            qp.Status,
+            qp.StudentId,
+            qp.CourseId);
 
         var response = result.Items.Select(EnrollmentMapper.ToResponse).ToList();
 
@@ -60,7 +63,7 @@ public class EnrollmentsController : ControllerBase
         });
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(
         int id,
         [FromQuery] string? expand,
@@ -81,7 +84,7 @@ public class EnrollmentsController : ControllerBase
             return NotFound(new ApiResponse<object>
             {
                 Success = false,
-                Message = "Enrollment not found"
+                Message = "Resource not found"
             });
         }
 
@@ -121,7 +124,7 @@ public class EnrollmentsController : ControllerBase
         });
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, UpdateEnrollmentRequest request)
     {
         var model = new EnrollmentModel
@@ -154,7 +157,7 @@ public class EnrollmentsController : ControllerBase
         });
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _enrollmentService.DeleteAsync(id);
@@ -168,10 +171,6 @@ public class EnrollmentsController : ControllerBase
             });
         }
 
-        return Ok(new ApiResponse<object>
-        {
-            Success = true,
-            Message = "Enrollment deleted successfully"
-        });
+        return NoContent();
     }
 }
