@@ -21,13 +21,15 @@ public class SubjectService : ISubjectService
         string? sort,
         int page,
         int size,
-        string[] expands)
+        string[] expands,
+        int? credit = null)
     {
         var expandList = expands ?? Array.Empty<string>();
 
         var query = new SubjectQuery
         {
             Search = search,
+            Credit = credit,
             Sort = sort,
             Page = page < 1 ? 1 : page,
             Size = size < 1 ? 10 : size,

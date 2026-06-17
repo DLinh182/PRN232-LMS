@@ -21,11 +21,13 @@ public class StudentService : IStudentService
         string? sort,
         int page,
         int size,
-        string[] expands)
+        string[] expands,
+        string? email = null)
     {
         var query = new StudentQuery
         {
             Search = search,
+            Email = email,
             Sort = sort,
             Page = page < 1 ? 1 : page,
             Size = size < 1 ? 10 : size,
@@ -127,7 +129,18 @@ public class StudentService : IStudentService
                     ? new CourseModel
                     {
                         CourseId = e.Course.CourseId,
-                        CourseName = e.Course.CourseName
+                        CourseName = e.Course.CourseName,
+                        SemesterId = e.Course.SemesterId,
+                        SubjectId = e.Course.SubjectId,
+                        Semester = set.Contains("semester") && e.Course.Semester != null
+                            ? new SemesterModel
+                            {
+                                SemesterId = e.Course.Semester.SemesterId,
+                                SemesterName = e.Course.Semester.SemesterName,
+                                StartDate = e.Course.Semester.StartDate,
+                                EndDate = e.Course.Semester.EndDate
+                            }
+                            : null
                     }
                     : null
             }).ToList();

@@ -36,7 +36,8 @@ public class StudentsController : ControllerBase
             qp.Sort,
             qp.Page,
             qp.Size,
-            qp.GetExpandList());
+            qp.GetExpandList(),
+            qp.Email);
 
         var response = result.Items.Select(StudentMapper.ToResponse).ToList();
 
@@ -59,7 +60,7 @@ public class StudentsController : ControllerBase
         });
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(
         int id,
         [FromQuery] string? expand,
@@ -73,6 +74,11 @@ public class StudentsController : ControllerBase
             ? Array.Empty<string>()
             : fields.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
+        if (expands.Length == 0)
+        {
+            expands = new[] { "enrollments", "course", "semester" };
+        }
+
         var student = await _studentService.GetByIdAsync(id, expands);
 
         if (student == null)
@@ -80,7 +86,7 @@ public class StudentsController : ControllerBase
             return NotFound(new ApiResponse<object>
             {
                 Success = false,
-                Message = "Student not found"
+                Message = "Resource not found"
             });
         }
 
@@ -130,7 +136,7 @@ public class StudentsController : ControllerBase
     }
 
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(
         int id,
         UpdateStudentRequest request)
@@ -172,7 +178,7 @@ public class StudentsController : ControllerBase
     }
 
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _studentService.DeleteAsync(id);
@@ -186,10 +192,6 @@ public class StudentsController : ControllerBase
             });
         }
 
-        return Ok(new ApiResponse<object>
-        {
-            Success = true,
-            Message = "Student deleted successfully"
-        });
+        return NoContent();
     }
 }

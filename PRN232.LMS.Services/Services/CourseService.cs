@@ -21,13 +21,15 @@ public class CourseService : ICourseService
         string? sort,
         int page,
         int size,
-        string[] expands)
+        string[] expands,
+        int? semesterId = null)
     {
         var expandList = expands ?? Array.Empty<string>();
 
         var query = new CourseQuery
         {
             Search = search,
+            SemesterId = semesterId,
             Sort = sort,
             Page = page < 1 ? 1 : page,
             Size = size < 1 ? 10 : size,

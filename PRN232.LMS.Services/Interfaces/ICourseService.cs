@@ -10,7 +10,8 @@ public interface ICourseService
         string? sort,
         int page,
         int size,
-        string[] expands);
+        string[] expands,
+        int? semesterId = null);
 
     Task<CourseModel?> GetByIdAsync(int id, string[] expands);
 

@@ -25,6 +25,11 @@ public class CourseRepository : ICourseRepository
             q = q.Where(x => x.CourseName.ToLower().Contains(keyword));
         }
 
+        if (query.SemesterId.HasValue)
+        {
+            q = q.Where(x => x.SemesterId == query.SemesterId.Value);
+        }
+
         q = ApplyExpands(q, query.Expands);
         q = ApplySort(q, query.Sort);
 

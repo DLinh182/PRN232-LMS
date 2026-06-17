@@ -36,7 +36,8 @@ public class CoursesController : ControllerBase
             qp.Sort,
             qp.Page,
             qp.Size,
-            qp.GetExpandList());
+            qp.GetExpandList(),
+            qp.SemesterId);
 
         var response = result.Items.Select(CourseMapper.ToResponse).ToList();
 
@@ -60,7 +61,7 @@ public class CoursesController : ControllerBase
         });
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(
         int id,
         [FromQuery] string? expand,
@@ -81,7 +82,7 @@ public class CoursesController : ControllerBase
             return NotFound(new ApiResponse<object>
             {
                 Success = false,
-                Message = "Course not found"
+                Message = "Resource not found"
             });
         }
 
@@ -106,7 +107,7 @@ public class CoursesController : ControllerBase
         {
             CourseName = request.CourseName,
             SemesterId = request.SemesterId,
-            SubjectId = request.SubjectId
+            SubjectId = request.SubjectId ?? 1
         };
 
         var created = await _courseService.CreateAsync(model);
@@ -120,7 +121,7 @@ public class CoursesController : ControllerBase
         });
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, UpdateCourseRequest request)
     {
         var model = new CourseModel
@@ -128,7 +129,7 @@ public class CoursesController : ControllerBase
             CourseId = id,
             CourseName = request.CourseName,
             SemesterId = request.SemesterId,
-            SubjectId = request.SubjectId
+            SubjectId = request.SubjectId ?? 1
         };
 
         var updated = await _courseService.UpdateAsync(model);
@@ -152,7 +153,7 @@ public class CoursesController : ControllerBase
         });
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _courseService.DeleteAsync(id);
@@ -166,10 +167,6 @@ public class CoursesController : ControllerBase
             });
         }
 
-        return Ok(new ApiResponse<object>
-        {
-            Success = true,
-            Message = "Course deleted successfully"
-        });
+        return NoContent();
     }
 }
